@@ -1,7 +1,7 @@
-import { FastifyRequest } from 'fastify'
+import { type FastifyRequest } from 'fastify'
 import concat = require('concat-stream')
 
-import { StorageEngine, File } from '../interfaces'
+import { File, StorageEngine } from '../interfaces'
 
 class MemoryStorage implements StorageEngine {
   _handleFile(
@@ -10,7 +10,7 @@ class MemoryStorage implements StorageEngine {
     cb: (error: Error | null, info?: Partial<File>) => void,
   ): void {
     file.stream!.pipe(
-      concat({ encoding: 'buffer' }, function(data) {
+      concat({ encoding: 'buffer' }, function (data) {
         cb(null, {
           buffer: data,
           size: data.length,

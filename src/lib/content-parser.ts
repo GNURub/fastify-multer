@@ -1,7 +1,6 @@
-import { IncomingMessage } from 'http'
-import fp from 'fastify-plugin'
-import { PluginOptions } from 'fastify-plugin'
-import { FastifyInstance, FastifyRequest } from 'fastify'
+import type { FastifyInstance, FastifyRequest } from 'fastify'
+import fp, { type PluginMetadata } from 'fastify-plugin'
+import { IncomingMessage } from 'node:http'
 
 const kMultipart = Symbol('multipart')
 
@@ -21,17 +20,17 @@ export function isMultipart(this: FastifyRequest): boolean {
 
 function fastifyMulter(
   fastify: FastifyInstance,
-  _options: PluginOptions,
+  _options: PluginMetadata,
   next: (err?: Error) => void,
 ) {
-  fastify.addContentTypeParser('multipart', setMultipart)
+  fastify.addContentTypeParser(['multipart', 'multipart/form-data'], setMultipart)
   fastify.decorateRequest('isMultipart', isMultipart)
 
   next()
 }
 
 const multer = fp(fastifyMulter, {
-  fastify: '>= 3.0.0',
+  fastify: '>= 5.0.0',
   name: 'fastify-multer',
 })
 

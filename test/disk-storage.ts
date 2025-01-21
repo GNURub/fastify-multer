@@ -1,19 +1,19 @@
 import assert from 'assert'
 
-import fs from 'fs'
-import path from 'path'
-import { file, fileSize, submitForm } from './_util'
-import multer from '../lib'
-import temp from 'fs-temp'
-import rimraf from 'rimraf'
 import FormData from 'form-data'
+import fs from 'fs'
+import temp from 'fs-temp'
+import path from 'path'
+import { rimraf } from 'rimraf'
+import multer from '../lib'
+import { file, fileSize, submitForm } from './_util'
 
-describe('Disk Storage', function() {
+describe('Disk Storage', function () {
   let uploadDir
   let upload: ReturnType<typeof multer>
 
-  beforeEach(function(done) {
-    temp.mkdir(function(err, p) {
+  beforeEach(function (done) {
+    temp.mkdir(function (err, p) {
       if (err) {
         return done(err)
       }
@@ -24,18 +24,18 @@ describe('Disk Storage', function() {
     })
   })
 
-  afterEach(function(done) {
-    rimraf(uploadDir, done)
+  afterEach(function (done) {
+    rimraf(uploadDir).then(done)
   })
 
-  it('should process parser/form-data POST request', function(done) {
+  it('should process parser/form-data POST request', function (done) {
     const form = new FormData()
     const parser = upload.single('small0')
 
     form.append('name', 'Multer')
     form.append('small0', file('small0.dat'))
 
-    submitForm(parser, form, function(err, req) {
+    submitForm(parser, form, function (err, req) {
       assert.ifError(err)
 
       assert.equal(req.body.name, 'Multer')
@@ -47,7 +47,7 @@ describe('Disk Storage', function() {
     })
   })
 
-  it('should process empty fields and an empty file', function(done) {
+  it('should process empty fields and an empty file', function (done) {
     const form = new FormData()
     const parser = upload.single('empty')
 
@@ -62,7 +62,7 @@ describe('Disk Storage', function() {
     form.append('checkboxempty', '')
     form.append('checkboxempty', '')
 
-    submitForm(parser, form, function(err, req) {
+    submitForm(parser, form, function (err, req) {
       assert.ifError(err)
 
       assert.equal(req.body.name, 'Multer')
@@ -82,7 +82,7 @@ describe('Disk Storage', function() {
     })
   })
 
-  it('should process multiple files', function(done) {
+  it('should process multiple files', function (done) {
     const form = new FormData()
     const parser = upload.fields([
       { name: 'empty', maxCount: 1 },
@@ -102,7 +102,7 @@ describe('Disk Storage', function() {
     form.append('medium', file('medium.dat'))
     form.append('large', file('large.jpg'))
 
-    submitForm(parser, form, function(err, req) {
+    submitForm(parser, form, function (err, req) {
       assert.ifError(err)
 
       assert.deepEqual(req.body, {})
@@ -142,14 +142,14 @@ describe('Disk Storage', function() {
     })
   })
 
-  it('should remove uploaded files on error', function(done) {
+  it('should remove uploaded files on error', function (done) {
     const form = new FormData()
     const parser = upload.single('tiny0')
 
     form.append('tiny0', file('tiny0.dat'))
     form.append('small0', file('small0.dat'))
 
-    submitForm(parser, form, function(err, _req) {
+    submitForm(parser, form, function (err, _req) {
       assert.equal(err.code, 'LIMIT_UNEXPECTED_FILE')
       assert.equal(err.field, 'small0')
       assert.deepEqual(err.storageErrors, [])
@@ -161,7 +161,7 @@ describe('Disk Storage', function() {
     })
   })
 
-  it("should report error when directory doesn't exist", function(done) {
+  it("should report error when directory doesn't exist", function (done) {
     const directory = path.join(temp.mkdirSync(), 'ghost')
     function dest(_$0, _$1, cb) {
       cb(null, directory)
@@ -174,7 +174,7 @@ describe('Disk Storage', function() {
 
     form.append('tiny0', file('tiny0.dat'))
 
-    submitForm(parser, form, function(err, _req) {
+    submitForm(parser, form, function (err, _req) {
       assert.equal(err.code, 'ENOENT')
       assert.equal(path.dirname(err.path), directory)
 

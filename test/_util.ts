@@ -1,7 +1,7 @@
 import fs from 'fs'
+import onFinished from 'on-finished'
 import path from 'path'
 import stream from 'stream'
-import onFinished from 'on-finished'
 
 export function file(name: string) {
   return fs.createReadStream(path.join(__dirname, 'files', name))
@@ -12,7 +12,7 @@ export function fileSize(p: string) {
 }
 
 export function submitForm(multer: any, form: any, cb: any) {
-  form.getLength(function(err: Error, length: number) {
+  form.getLength(function (err: Error, length: number) {
     if (err) {
       return cb(err)
     }
@@ -20,7 +20,7 @@ export function submitForm(multer: any, form: any, cb: any) {
     const req = new stream.PassThrough() as stream.PassThrough & { complete: boolean; headers: any }
 
     req.complete = false
-    form.once('end', function() {
+    form.once('end', function () {
       req.complete = true
     })
 
@@ -31,8 +31,8 @@ export function submitForm(multer: any, form: any, cb: any) {
     }
 
     const request = { raw: req }
-    multer(request, null, function(error: Error) {
-      onFinished(req as any, function() {
+    multer(request, null, function (error: Error) {
+      onFinished(req as any, function () {
         cb(error, request)
       })
     })

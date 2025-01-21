@@ -1,19 +1,18 @@
+import 'fastify'
 import { FastifyRequest, preHandlerHookHandler } from 'fastify'
+import contentParser, { isMultipart } from './lib/content-parser'
 import makePreHandler from './lib/make-prehandler'
+import MulterError from './lib/multer-error'
 import diskStorage from './storage/disk'
 import memoryStorage from './storage/memory'
-import MulterError from './lib/multer-error'
-import contentParser from './lib/content-parser'
-import 'fastify'
-import { isMultipart } from './lib/content-parser'
 
 import {
   Field,
   File,
-  FilesObject,
-  Options,
   FileFilter,
   FileFilterCallback,
+  FilesObject,
+  Options,
   Setup,
   StorageEngine,
 } from './interfaces'
@@ -60,7 +59,7 @@ class Multer {
       const fileFilter = this.fileFilter
       const filesLeft = Object.create(null)
 
-      fields.forEach(function(field) {
+      fields.forEach(function (field) {
         if (typeof field.maxCount === 'number') {
           filesLeft[field.name] = field.maxCount
         } else {
@@ -127,7 +126,7 @@ interface MulterFactory {
   default: MulterFactory
 }
 
-const multer: any = function(options?: Options) {
+const multer: any = function (options?: Options) {
   if (options === undefined) {
     return new Multer({})
   }
