@@ -6,10 +6,10 @@ import is from 'type-is'
 import extend from 'xtend'
 
 import { File, Setup } from '../interfaces'
-import Counter from './counter'
-import FileAppender from './file-appender'
-import MulterError, { ErrorMessages } from './multer-error'
-import removeUploadedFiles, { RemoveUploadedFileError } from './remove-uploaded-files'
+import { Counter } from './counter'
+import { FileAppender } from './file-appender'
+import { ErrorMessages, MulterError } from './multer-error'
+import { RemoveUploadedFileError, removeUploadedFiles } from './remove-uploaded-files'
 
 type UploadError = { storageErrors?: RemoveUploadedFileError[] } & Error
 
@@ -17,7 +17,7 @@ function drainStream(stream: NodeJS.ReadableStream) {
   stream.on('readable', stream.read.bind(stream))
 }
 
-function makePreHandler(setup: Setup) {
+export function makePreHandler(setup: Setup) {
   return (request: FastifyRequest, _: FastifyReply, next: (err?: Error) => void) => {
     const rawRequest = request.raw
 
@@ -220,5 +220,3 @@ function makePreHandler(setup: Setup) {
     rawRequest.pipe(busboy)
   }
 }
-
-export default makePreHandler

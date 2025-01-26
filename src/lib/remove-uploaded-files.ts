@@ -1,7 +1,7 @@
 import { File } from '../interfaces'
 export type RemoveUploadedFileError = { file?: File; field?: string } & Error
 
-function removeUploadedFiles(
+export function removeUploadedFiles(
   uploadedFiles: File[],
   remove: (file: File, cb: (error?: Error | null) => void) => void,
   cb: (err: Error | null, storageErrors: RemoveUploadedFileError[]) => void,
@@ -33,5 +33,3 @@ function removeUploadedFiles(
 
   handleFile(0)
 }
-
-export default removeUploadedFiles

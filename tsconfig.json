@@ -3,7 +3,7 @@
     "moduleResolution": "node",
     "declaration": true,
     "target": "ES2023",
-    "module": "ESNext",
+    "module": "CommonJS",
     "outDir": "lib",
     "pretty": true,
     "noEmitOnError": true,

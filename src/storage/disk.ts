@@ -77,4 +77,4 @@ class DiskStorage implements StorageEngine {
   }
 }
 
-export default (opts: DiskStorageOptions) => new DiskStorage(opts)
+export const diskStorage = (opts: DiskStorageOptions) => new DiskStorage(opts)

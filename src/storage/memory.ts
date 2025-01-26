@@ -35,4 +35,4 @@ class MemoryStorage implements StorageEngine {
   }
 }
 
-export default () => new MemoryStorage()
+export const memoryStorage = () => new MemoryStorage()

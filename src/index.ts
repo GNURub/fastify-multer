@@ -1,10 +1,10 @@
 import 'fastify'
-import { FastifyRequest, preHandlerHookHandler } from 'fastify'
-import contentParser, { isMultipart } from './lib/content-parser'
-import makePreHandler from './lib/make-prehandler'
-import MulterError from './lib/multer-error'
-import diskStorage from './storage/disk'
-import memoryStorage from './storage/memory'
+import { type FastifyRequest, preHandlerHookHandler } from 'fastify'
+import { contentParser, isMultipart } from './lib/content-parser'
+import { makePreHandler } from './lib/make-prehandler'
+import { MulterError } from './lib/multer-error'
+import { diskStorage } from './storage/disk'
+import { memoryStorage } from './storage/memory'
 
 import {
   Field,

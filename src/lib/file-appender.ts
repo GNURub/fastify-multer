@@ -13,7 +13,7 @@ function arrayRemove(arr: any[], item: Placeholder) {
   }
 }
 
-class FileAppender {
+export class FileAppender {
   strategy: Strategy
   request: FastifyRequest
 
@@ -90,5 +90,3 @@ class FileAppender {
     Object.assign(placeholder, file)
   }
 }
-
-export default FileAppender

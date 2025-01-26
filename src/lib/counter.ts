@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events'
 
-class Counter extends EventEmitter {
+export class Counter extends EventEmitter {
   value: number
 
   constructor() {
@@ -30,5 +30,3 @@ class Counter extends EventEmitter {
     this.once('zero', fn)
   }
 }
-
-export default Counter

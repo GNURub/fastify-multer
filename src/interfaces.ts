@@ -1,5 +1,5 @@
-import { FastifyRequest } from 'fastify'
-import { Strategy } from './lib/file-appender'
+import type { FastifyRequest } from 'fastify'
+import type { Strategy } from './lib/file-appender'
 
 export type FilesObject = {
   [fieldname: string]: Partial<File>[]

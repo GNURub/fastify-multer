@@ -29,9 +29,7 @@ function fastifyMulter(
   next()
 }
 
-const multer = fp(fastifyMulter, {
+export const contentParser = fp(fastifyMulter, {
   fastify: '>= 5.0.0',
   name: 'fastify-multer',
 })
-
-export default multer

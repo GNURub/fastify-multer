@@ -18,7 +18,7 @@ const errorMessages: ErrorMessages = {
   LIMIT_UNEXPECTED_FILE: 'Unexpected field',
 }
 
-class MulterError extends Error {
+export class MulterError extends Error {
   code: string
   field: string | undefined = undefined
 
@@ -33,5 +33,3 @@ class MulterError extends Error {
     Error.captureStackTrace(this, this.constructor)
   }
 }
-
-export default MulterError
