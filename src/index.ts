@@ -28,7 +28,10 @@ declare module 'fastify' {
   }
 }
 
-function allowAll(_req: FastifyRequest, _file: File, cb: FileFilterCallback) {
+/**
+ * Default file filter that allows all files.
+ */
+function allowAll(_req: FastifyRequest, _file: File, cb: FileFilterCallback): void {
   cb(null, true)
 }
 
@@ -39,7 +42,7 @@ class Multer {
   fileFilter: FileFilter
   contentParser: typeof contentParser
 
-  constructor(options: Options) {
+  constructor(options: Options = {}) {
     if (options.storage) {
       this.storage = options.storage
     } else if (options.dest) {
@@ -54,20 +57,19 @@ class Multer {
     this.contentParser = contentParser
   }
 
-  private _makePreHandler(fields: Field[], fileStrategy: Strategy) {
+  /**
+   * Creates a pre-handler function for handling file uploads.
+   */
+  private _makePreHandler(fields: Field[], fileStrategy: Strategy): preHandlerHookHandler {
     const setup: Setup = () => {
       const fileFilter = this.fileFilter
       const filesLeft = Object.create(null)
 
-      fields.forEach(function (field) {
-        if (typeof field.maxCount === 'number') {
-          filesLeft[field.name] = field.maxCount
-        } else {
-          filesLeft[field.name] = Infinity
-        }
+      fields.forEach(field => {
+        filesLeft[field.name] = typeof field.maxCount === 'number' ? field.maxCount : Infinity
       })
 
-      function wrappedFileFilter(req: FastifyRequest, file: File, cb: FileFilterCallback) {
+      const wrappedFileFilter = (req: FastifyRequest, file: File, cb: FileFilterCallback): void => {
         if ((filesLeft[file.fieldname] || 0) <= 0) {
           return cb(new MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname))
         }
@@ -88,22 +90,37 @@ class Multer {
     return makePreHandler(setup)
   }
 
+  /**
+   * Handles a single file upload.
+   */
   single(name: string): preHandlerHookHandler {
     return this._makePreHandler([{ name, maxCount: 1 }], 'VALUE')
   }
 
+  /**
+   * Handles multiple files for a single field.
+   */
   array(name: string, maxCount?: number): preHandlerHookHandler {
     return this._makePreHandler([{ name, maxCount }], 'ARRAY')
   }
 
+  /**
+   * Handles multiple fields with multiple files.
+   */
   fields(fields: Field[]): preHandlerHookHandler {
     return this._makePreHandler(fields, 'OBJECT')
   }
 
+  /**
+   * Handles no file uploads.
+   */
   none(): preHandlerHookHandler {
     return this._makePreHandler([], 'NONE')
   }
 
+  /**
+   * Handles any file uploads.
+   */
   any(): preHandlerHookHandler {
     const setup: Setup = () => ({
       limits: this.limits,
@@ -118,7 +135,7 @@ class Multer {
 }
 
 interface MulterFactory {
-  (options?: Options | undefined): Multer
+  (options?: Options): Multer
   contentParser: typeof contentParser
   diskStorage: typeof diskStorage
   memoryStorage: typeof memoryStorage
@@ -126,7 +143,10 @@ interface MulterFactory {
   default: MulterFactory
 }
 
-const multer: any = function (options?: Options) {
+/**
+ * Factory function to create a Multer instance.
+ */
+const multer = ((options?: Options): Multer => {
   if (options === undefined) {
     return new Multer({})
   }
@@ -136,7 +156,7 @@ const multer: any = function (options?: Options) {
   }
 
   throw new TypeError('Expected object for argument options')
-}
+}) as MulterFactory
 
 multer.contentParser = contentParser
 multer.diskStorage = diskStorage
@@ -144,4 +164,6 @@ multer.memoryStorage = memoryStorage
 multer.MulterError = MulterError
 multer.default = multer
 
-export default multer as MulterFactory
+export default multer
+
+export { contentParser, diskStorage, memoryStorage, MulterError }
