@@ -1,11 +1,10 @@
-import assert from 'assert'
-
-import { file, submitForm } from './_util'
-import multer from '../lib'
 import FormData from 'form-data'
+import { describe, expect, it } from 'vitest'
+import multer from '../lib'
+import { file, submitForm } from './_util'
 
-describe('File ordering', function() {
-  it('should present files in same order as they came', function(done) {
+describe('File ordering', () => {
+  it('should present files in same order as they came', async () => {
     const storage = multer.memoryStorage()
     const upload = multer({ storage: storage })
     const parser = upload.array('themFiles', 2)
@@ -14,10 +13,11 @@ describe('File ordering', function() {
     const calls: any[] = [{}, {}]
     let pending = 2
     const _handleFile = storage._handleFile
-    storage._handleFile = function(req, f, cb) {
+
+    storage._handleFile = function (req, f, cb) {
       const id = i++
 
-      _handleFile.call(this, req, f, function(err, info) {
+      _handleFile.call(this, req, f, function (err, info) {
         if (err) {
           return cb(err)
         }
@@ -37,12 +37,11 @@ describe('File ordering', function() {
     form.append('themFiles', file('small0.dat'))
     form.append('themFiles', file('small1.dat'))
 
-    submitForm(parser, form, function(err, req) {
-      assert.ifError(err)
-      assert.equal(req.files.length, 2)
-      assert.equal(req.files[0].originalname, 'small0.dat')
-      assert.equal(req.files[1].originalname, 'small1.dat')
-      done()
-    })
+    const { req, err } = await submitForm(parser, form)
+
+    expect(err).toBeNull()
+    expect(req.files.length).toBe(2)
+    expect(req.files[0].originalname).toBe('small0.dat')
+    expect(req.files[1].originalname).toBe('small1.dat')
   })
 })

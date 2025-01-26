@@ -1,6 +1,4 @@
 import { type FastifyRequest } from 'fastify'
-import concat = require('concat-stream')
-
 import { File, StorageEngine } from '../interfaces'
 
 class MemoryStorage implements StorageEngine {
@@ -9,14 +7,26 @@ class MemoryStorage implements StorageEngine {
     file: File,
     cb: (error: Error | null, info?: Partial<File>) => void,
   ): void {
-    file.stream!.pipe(
-      concat({ encoding: 'buffer' }, function (data) {
-        cb(null, {
-          buffer: data,
-          size: data.length,
-        })
-      }),
-    )
+    const chunks: Buffer[] = []
+
+    // Collect chunks of data from the stream
+    file.stream!.on('data', (chunk: Buffer) => {
+      chunks.push(chunk)
+    })
+
+    // When the stream ends, concatenate the chunks into a single buffer
+    file.stream!.on('end', () => {
+      const buffer = Buffer.concat(chunks)
+      cb(null, {
+        buffer: buffer,
+        size: buffer.length,
+      })
+    })
+
+    // Handle stream errors
+    file.stream!.on('error', (err: Error) => {
+      cb(err)
+    })
   }
 
   _removeFile(_req: FastifyRequest, file: File, cb: (error?: Error) => void) {

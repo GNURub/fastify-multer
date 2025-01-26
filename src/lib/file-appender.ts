@@ -1,4 +1,4 @@
-import { FastifyRequest } from 'fastify'
+import type { FastifyRequest } from 'fastify'
 import { File, FilesObject } from '../interfaces'
 
 export type Strategy = 'NONE' | 'VALUE' | 'ARRAY' | 'OBJECT'

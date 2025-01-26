@@ -2,8 +2,8 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "declaration": true,
-    "target": "ESNext",
-    "module": "commonjs",
+    "target": "ES2023",
+    "module": "ESNext",
     "outDir": "lib",
     "pretty": true,
     "noEmitOnError": true,
@@ -15,20 +15,28 @@
     "esModuleInterop": true,
     "removeComments": true,
     "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "lib": [
       "esnext"
     ],
     "typeRoots": [
       "./node_modules/@types",
       "./typings"
-    ]
+    ],
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "formatCodeOptions": {
-    "identSize": 2,
+    "indentSize": 2,
     "tabSize": 2
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ],
   "include": [
     "./src/**/*.ts"
